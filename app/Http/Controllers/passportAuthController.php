@@ -25,6 +25,14 @@ class passportAuthController extends Controller
                 "fournisseur" => $request->fournisseur 
             ]);
 
+            // ceci est un test PUSH PAR TARIK
+////////////////////////
+
+//////
+
+/////////////////////////////////
+
+
             // declaration des deux variables  
             $photo=null;
             $cv=null;
