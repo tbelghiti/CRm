@@ -2,31 +2,85 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Profil;
 use App\Models\User;
 use Illuminate\Http\Request;
 
 class passportAuthController extends Controller
 {
-    // public function registerUserExample(Request $request){
-    //     $this->validate($request,[
-    //         'name'=>'required',
-    //         'email'=>'required|email|unique:users',
-    //         'password'=>'required|min:8',
-    //     ]);
-    //     $user= User::create([
-    //         'name' =>$request->name,
-    //         'email'=>$request->email,
-    //         'password'=>bcrypt($request->password)
-    //     ]);
+    public function registerUserExample(Request $request){
+        $this->validate($request,[
+            'nom'=>'required',
+            'prenom'=>'required',
+            'email'=>'required|email|unique:users',
+            'password'=>'required|min:8',
 
-    //     $access_token_example = $user->createToken('PassportExample@Section.io')->access_token;
-    //     //return the access token we generated in the above step
-    //     return response()->json(['token'=>$access_token_example],200);
-    // }
+        ]);
+
+            $profil = Profil::create([
+                "admin" => $request->admin ,
+                "gestionnaire" => $request->gestionnaire,
+                "user" => 1 ,
+                "client" => $request->client ,
+                "fournisseur" => $request->fournisseur 
+            ]);
+
+            // declaration des deux variables  
+            $photo=null;
+            $cv=null;
+            // le traitement pour enregister image et le cv
+            if($request->file('photo'))
+            {
+             $destination='storage/images';
+                $image=$request->file('photo');
+                $photo=$image->getClientOriginalName();
+                $image->move($destination, $photo);  
+            }
+
+            if($request->file('cv')){
+
+                $destination='storage/cv';
+                $file=$request->file('cv');
+                $cv=$file->getClientOriginalName();
+                $file->move($destination, $cv);
+
+            }
+
+
+        $user= User::create([
+            'nom' =>$request->nom,
+            'prenom'=>$request->prenom,
+            'email'=>$request->email,
+            'password'=>bcrypt($request->password),
+            'poste'=>$request->poste,
+            'naissance'=>$request->naissance,
+            'base_salaire'=>$request->base_salaire,
+            //changer le cv et photo avec les variables declarée
+            'cv'=>$request->$cv,
+            'photo'=>$request->$photo,
+            'date_recrutement'=>$request->date_recrutement,
+            'date_derniere_connexion'=>$request->date_derniere_connexion,
+            'lieu_du_travail'=>$request->lieu_du_travail,
+            'contrat'=>$request->contact,
+            'statut'=>$request->statut,
+            'adresse'=>$request->adresse,
+            'ville'=>$request->ville,
+            'pays'=>$request->pays,
+            'telephone1'=>$request->telephone1,
+            'telephone2'=>$request->telephone2,
+            'note1'=>$request->note1,
+            'note2'=>$request->note2,
+            'profils_id'=>$profil->id,
+        ]);
+
+   //return the access token we generated in the above step
+        return response()->json(['status'=>"ok"],200);
+    }
 
     /**
      * login user to our application
      */
+    
     public function loginUserExample(Request $request){
         $login_credentials=[
             'email'=>$request->email,
