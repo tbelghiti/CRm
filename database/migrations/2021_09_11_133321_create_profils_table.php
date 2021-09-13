@@ -15,6 +15,11 @@ class CreateProfilsTable extends Migration
     {
         Schema::create('profils', function (Blueprint $table) {
             $table->id();
+            $table->tinyInteger('admin')->nullable();
+            $table->tinyInteger('gestionnaire')->nullable();
+            $table->tinyInteger('user')->nullable();
+            $table->tinyInteger('client')->nullable();
+            $table->tinyInteger('fournisseur')->nullable();
             $table->timestamps();
         });
     }
